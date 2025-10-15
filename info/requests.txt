@@ -1,0 +1,89 @@
+HTTP Request Methods:
+
+1. GET
+- Purpose: Retrieve data from the server.
+- Idempotent: Yes
+- Example:
+  GET /users
+  GET /users/123
+
+2. POST
+- Purpose: Create a new resource on the server.
+- Idempotent: No
+- Example:
+  POST /users
+  Body: { "name": "Alice", "email": "alice@example.com" }
+
+3. PUT
+- Purpose: Replace an existing resource entirely.
+- Idempotent: Yes
+- Example:
+  PUT /users/123
+  Body: { "name": "Alice", "email": "alice.new@example.com", "age": 26 }
+
+4. PATCH
+- Purpose: Partially update a resource.
+- Idempotent: Usually yes
+- Example:
+  PATCH /users/123
+  Body: { "email": "alice.new@example.com" }
+
+5. DELETE
+- Purpose: Remove a resource.
+- Idempotent: Yes
+- Example:
+  DELETE /users/123
+
+6. HEAD
+- Purpose: Same as GET but without the response body. Useful for checking headers or if a resource exists.
+- Example:
+  HEAD /users/123
+
+7. OPTIONS
+- Purpose: Discover the allowed HTTP methods on a resource. Often used in CORS preflight requests.
+- Example:
+  OPTIONS /users
+
+8. CONNECT
+- Purpose: Establish a tunnel to the server (rarely used directly in APIs; mostly in proxies)
+- Example:
+  CONNECT /example.com:443
+
+9. TRACE
+- Purpose: Echoes back the request for debugging purposes (rarely used; not recommended in production)
+- Example:
+  TRACE /users
+
+Most common in REST APIs: GET, POST, PUT, PATCH, DELETE
+
+An idempotent HTTP method is one where making the same request multiple times has the same effect on the server as making it once.
+In other words, no matter how many times you repeat it, the result doesn’t change (though the response might differ in some cases).
+Think: “Can I safely repeat this request without changing the outcome?”
+Yes → Idempotent
+No → Not idempotent
+
+
+
+
+Idempotent PATCH
+
+PATCH /users/123
+Body: { "email": "alice@example.com" }
+
+
+You set the email to the same value.
+
+Sending this PATCH once or 10 times leaves the email the same.
+
+Non-idempotent PATCH
+
+PATCH /users/123
+Body: { "login_count": "increment by 1" }
+
+
+Each time you send it, login_count goes up.
+
+Sending it multiple times changes the resource each time.
+
+
+PUT is idempotent as every time you update, you modify object

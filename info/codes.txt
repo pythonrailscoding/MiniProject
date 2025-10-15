@@ -1,0 +1,15 @@
+Status Codes (Basics)
+
+200 OK → Success
+
+201 Created → Resource created
+
+400 Bad Request → Something wrong in request
+
+401 Unauthorized → Need to login
+
+403 Forbidden → You’re not allowed
+
+404 Not Found → Resource doesn’t exist
+
+500 Internal Server Error → Server crashed

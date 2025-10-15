@@ -1,0 +1,2 @@
+https://pymongo.readthedocs.io/en/stable/api/index.html
+https://www.mongodb.com/docs/languages/python/pymongo-driver/current/get-started/?msockid=00ea25e01432619c1292339a153460c8

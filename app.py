@@ -188,7 +188,7 @@ def login():
 # You store that in localstorage, even in React.js, This is similar to simple-jwt in React+Django stuff
 # Here, Logout/Login APIs are created, no drama of refresh token as in Django REST framework, usage of simple jwt is good in react
 @app.route('/api/auth/logout', methods=['POST'])
-@jwt_required
+@jwt_required()
 def logout():
     # What you will do here? Just built it for the sake of it, remove access token from localstorage (or sessionstorage, why not? ;))
     return jsonify({'message': 'Logout successful'}), 200
@@ -196,7 +196,7 @@ def logout():
 # Get current user details
 # Slap this in profile page of the user
 @app.route('/api/auth/me', methods=['GET'])
-@jwt_required
+@jwt_required()
 # This returns id of current user, so that when you send requests to create a task, id will be called from here
 def get_current_user():
     """

@@ -11,14 +11,20 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from password_strength import PasswordPolicy
 
 # Hash your password, never store it directly
-from passlib.context import CryptContext
+import bcrypt
 
 # Need for CORS, idea for a React frontend , I will need it
 # CORS allows different servers to interact, recall django
 # CORS => Cross Origin Resource Sharing
 
+# Allow CORS
+from flask_cors import CORS
+
 load_dotenv()
 app = Flask(__name__)
+
+# Allow CORS
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
 # JWT Configuration
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
@@ -68,7 +74,8 @@ policy = PasswordPolicy.from_names(
 )
 
 # Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# This is causing compatibility issues. Remove this altogether and use bcrypt directly
 
 # Define serializers
 
@@ -126,7 +133,8 @@ def register():
 
     # Always Hash your password
     # Django too hashes and stores password
-    hashed_password = pwd_context.hash(password)
+    # Hash here now, with bcrypt
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     # Create user
     user = {
@@ -167,7 +175,8 @@ def login():
     if not user:
         return jsonify({'message': 'User does not exist'}), 404
 
-    if not pwd_context.verify(password, user['password']):
+    # bcrypt will check now
+    if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
         return jsonify({'message': 'Incorrect password'}), 401
 
     # Create access token

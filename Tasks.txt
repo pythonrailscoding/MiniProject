@@ -1,0 +1,10 @@
+1) Set a system of refresh token, great for production grade. Recall django rest framework
+
+"""
+Hey, if my access token expires, I can't authenticate.
+But, my localstorage still contains access token. How to replenish that? Should I create a isValid at backend?
+"""
+
+You see the point?
+2) CRUD
+3) Design

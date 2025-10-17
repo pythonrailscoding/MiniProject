@@ -1,0 +1,222 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.add-btn {
+    color: white;
+    background: green;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;                    /* ✅ make sure centering works */
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.65);  /* smoother backdrop */
+  backdrop-filter: blur(4px);       /* adds a subtle blur effect */
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #1c2333;
+  padding: 2rem 2.5rem;
+  border-radius: 15px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.input-group input,
+.input-group textarea {
+  background: #2a3042;
+  border: 1px solid #444a5a;
+  color: white;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  border-color: #4d9ef9;
+  box-shadow: 0 0 0 2px rgba(77, 158, 249, 0.2);
+}
+
+/* buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-buttons button {
+  background: #4d9ef9;
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 0.6rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.1s;
+}
+
+.cancel {
+    background: #c42356;
+}
+
+.cancel:hover {
+    background: #6e7992;
+}
+
+.modal-buttons button:hover {
+  background: #68adff;
+}
+
+.modal-buttons button.cancel {
+  background: #c42356;
+}
+
+.modal-buttons button.cancel:hover {
+  background: #6e7992;
+}
+
+.modal-buttons button:active {
+  transform: scale(0.97);
+}
+
+/* simple fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 90%;
+  margin: 20px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.task-item {
+  display: flex;
+  align-items: stretch; /* ensures full height of strip */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 0; /* remove padding so strip aligns */
+  position: relative;
+  min-height: 50px; /* ensures visible height */
+}
+
+.status-strip {
+  width: 6px;
+  background-color: red; /* default pending */
+  border-radius: 8px 0 0 8px;
+  flex-shrink: 0;       /* prevents it from shrinking */
+}
+
+.task-item.completed .status-strip {
+  background: repeating-linear-gradient(
+    45deg,
+    #4caf50,
+    #4caf50 5px,
+    #a5d6a7 5px,
+    #a5d6a7 10px
+  );
+  opacity: 0.6;
+}
+
+/* Make content fill remaining space */
+.task-content {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+.task-content h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.task-item.completed {
+  opacity: 0.6; /* fades out slightly */
+  background-color: #e8f5e9; /* light green background */
+}
+
+.tooltip {
+  position: fixed; /* floats above everything */
+  background-color: #333;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 9999; /* on top of everything */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Right action icons */
+.task-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: 15px;
+}
+
+.icon {
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.icon:hover {
+  transform: scale(1.2);
+  color: #1976d2;
+}
+

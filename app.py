@@ -5,13 +5,14 @@ from bson import ObjectId
 from pymongo import MongoClient
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 
 # This checks normal "strength" of password
 from password_strength import PasswordPolicy
 
 # Hash your password, never store it directly
 import bcrypt
+import ssl
 
 # Need for CORS, idea for a React frontend , I will need it
 # CORS allows different servers to interact, recall django
@@ -31,6 +32,8 @@ app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
 # Your essentially max. login time
 # Once this expires, you are logged out
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=24)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=30)
+
 jwt = JWTManager(app)
 
 # MongoDB connection
@@ -145,12 +148,14 @@ def register():
 
     result = db.users.insert_one(user)
 
-    # Create access tokens, No refresh token system as in simple-jwt of React
+    # Create access tokens, and refresh token system as in simple-jwt of React
     access_token = create_access_token(identity=str(result.inserted_id))
+    refresh_token = create_refresh_token(identity=str(result.inserted_id))
 
     return jsonify({
         'message': 'User registered successfully',
         'access_token': access_token,
+        'refresh_token': refresh_token,
         'user': {
             'id': str(result.inserted_id),
             'name': username
@@ -181,9 +186,11 @@ def login():
 
     # Create access token
     access_token = create_access_token(identity=str(user['_id']))
+    refresh_token = create_refresh_token(identity=str(user['_id']))
     return jsonify({
         'message': 'Login successful',
         'access_token': access_token,
+        "refresh_token": refresh_token,
         'user': {
             'id': str(user['_id']),
             # Find username, if exists, return that else return an empty string
@@ -201,6 +208,22 @@ def login():
 def logout():
     # What you will do here? Just built it for the sake of it, remove access token from localstorage (or sessionstorage, why not? ;))
     return jsonify({'message': 'Logout successful'}), 200
+
+@app.route("/api/auth/check_access_token", methods=['GET'])
+@jwt_required()
+def check_access_token():
+    current_user = get_jwt_identity()
+    return jsonify({
+        "status": "success",
+        "user_id": str(ObjectId(current_user)),
+    }), 200
+
+@app.route("/api/auth/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    current_user = get_jwt_identity()
+    new_access_token = create_access_token(identity=current_user)
+    return jsonify(access_token=new_access_token)
 
 # Get current user details
 # Slap this in profile page of the user
@@ -342,6 +365,18 @@ def get_todos_stats():
     return jsonify(result)
 
 # READ - Get single task
+
+"""
+Ok, if some other user tries to access this, he would provide task_id and his own id (his access token), as both are mandatory.
+Obviously, access tokens are hard to crack by, so he won't have access token
+
+Then in our query, we search by both user_id and task_id. This means that for this imposter user, we would return a 404
+
+But if our access token expires, jwt will catch that and return a 401 unauthorized call.
+Hence, you distinguished between an access token expiry and imposter access token
+
+Your 401 could also have been assigned to imposter case, but our clever query results in a 404, helping us distinguish
+"""
 @app.route('/api/todos/<task_id>', methods=['GET'])
 @jwt_required()
 def get_todo(task_id):

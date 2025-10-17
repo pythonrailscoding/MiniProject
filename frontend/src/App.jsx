@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference
+
 import React from 'react';
 import Register from "./pages/Register/Register";
 import Home from "./pages/Home/Home";
@@ -9,9 +11,38 @@ const App = () => {
 
     // Load JWT access token, at the start of boot
     React.useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("access_token");
         setIsAuthenticated(!!token);
     }, [])
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+
+        setIsAuthenticated(false);
+    }
+
+
+    const refreshAccessToken = async () => {
+        const refresh = localStorage.getItem("refresh_token");
+        if (!refresh) return false;
+
+        const res = await fetch("http://127.0.0.1:5000/api/auth/refresh", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${refresh}` },
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            localStorage.setItem("access_token", data.access_token);
+            return true;
+        } else {
+            // refresh token expired or invalid
+            handleLogout();
+            return false;
+        }
+    };
 
     return (
             <Routes>
@@ -23,7 +54,7 @@ const App = () => {
                 } />
 
                 <Route path="/" element={
-                    isAuthenticated ? (<Home setIsAuthenticated={setIsAuthenticated}/>) : (<Navigate to="/login" replace />)
+                    isAuthenticated ? (<Home handleLogout={handleLogout} refreshAccessToken={refreshAccessToken}/>) : (<Navigate to="/login" replace />)
                 } />
             </Routes>
     );

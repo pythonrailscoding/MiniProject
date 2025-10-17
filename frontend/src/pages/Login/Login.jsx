@@ -21,7 +21,9 @@ const Login = ({setIsAuthenticated}) => {
             const data = await res.json();
             if (res.ok) {
                 setIsAuthenticated(true);
-                localStorage.setItem("token", data.access_token);
+                console.log(data);
+                localStorage.setItem("access_token", data.access_token);
+                localStorage.setItem("refresh_token", data.refresh_token)
                 setError("")
             } else {
                 setError(data.message || "Login failed.");

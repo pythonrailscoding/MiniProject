@@ -27,7 +27,8 @@ const Register = ({setIsAuthenticated}) => {
             const data = await res.json();
             if (res.ok) {
                 setIsAuthenticated(true);
-                localStorage.setItem("token", data.access_token);
+                localStorage.setItem("access_token", data.access_token);
+                localStorage.setItem("refresh_token", data.refresh_token);
                 setUsername("");
                 setPassword1("");
                 setPassword2("");

@@ -15,7 +15,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;                    /* ✅ make sure centering works */
+  display: flex;                    /* make sure centering works */
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.65);  /* smoother backdrop */
